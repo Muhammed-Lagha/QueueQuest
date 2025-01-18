@@ -15,4 +15,8 @@
     <ProjectReference Include="..\LibraryMessages\LibraryMessages.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
