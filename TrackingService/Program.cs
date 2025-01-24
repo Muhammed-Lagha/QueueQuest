@@ -1,5 +1,5 @@
-using LibraryMessages.Messages;
 using MassTransit;
+using TrackingService.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +10,11 @@ builder.Services.AddMassTransit(x =>
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("rabbitmq://localhost");
-        cfg.Message<OrderPlaced>(x => x.SetEntityName("order-placed"));
-        cfg.Publish<OrderPlaced>(x => x.ExchangeType = "direct");
+
+        cfg.ReceiveEndpoint("tracking-order-placed", e =>
+        {
+            e.Consumer<OrderPlacedConsumer>(context);
+        });
     });
 });
 
