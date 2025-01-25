@@ -6,14 +6,16 @@ namespace OrderService.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class OrderController(IBus _bus) : ControllerBase
+    public class OrderController(IBus bus) : ControllerBase
     {
         [HttpPost]
         public async Task<ActionResult> PlaceOrder(OrderDto orderDto)
         {
             var orderPlaced = new OrderPlaced(orderDto.OrderId, orderDto.Quantity);
-            var endpoint = await _bus.GetSendEndpoint(new Uri("queue:order-placed"));
-            await endpoint.Send(orderPlaced);
+            await bus.Publish(orderPlaced, context =>
+            {
+                context.SetRoutingKey(orderPlaced.Quantity > 10 ? "order.shipping" : "order.Tracking");
+            });
             return NoContent();
         }
     }

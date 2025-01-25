@@ -10,7 +10,7 @@ builder.Services.AddMassTransit(x =>
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("rabbitmq://localhost");
-        cfg.Message<OrderPlaced>(x => x.SetEntityName("order-placed"));
+        cfg.Message<OrderPlaced>(x => x.SetEntityName("order-placed-exchange"));
         cfg.Publish<OrderPlaced>(x => x.ExchangeType = "direct");
     });
 });
