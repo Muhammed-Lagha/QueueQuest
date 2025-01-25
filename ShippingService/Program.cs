@@ -13,12 +13,22 @@ builder.Services.AddMassTransit(x =>
 
         cfg.ReceiveEndpoint("shipping-order-queue", e =>
         {
+
+            // bind the consumer to the fanout exchange
             e.Consumer<OrderPlacedConsumer>(context);
-            e.Bind("order-placed-exchange", s =>
+            e.Bind("order-placed-exchange-fanout", s =>
             {
                 s.RoutingKey = "order.shipping";
-                s.ExchangeType = "direct";
+                s.ExchangeType = "fanout";
             });
+
+            // bind the consumer to the direct exchange
+            //e.Consumer<OrderPlacedConsumer>(context);
+            //e.Bind("order-placed-exchange", s =>
+            //{
+            //    s.RoutingKey = "order.shipping";
+            //    s.ExchangeType = "direct";
+            //});
         });
     });
 });
